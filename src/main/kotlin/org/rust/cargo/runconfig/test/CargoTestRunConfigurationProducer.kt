@@ -96,10 +96,15 @@ class TestConfig(
     val configurationName: String,
     testPath: String,
     target: CargoWorkspace.Target,
-    private val exact: Boolean
+    exact: Boolean
 ) {
-    val cargoCommandLine: CargoCommandLine = CargoCommandLine.forTarget(target, "test", listOf(testPath))
-        .let { if (exact) it.withDoubleDashFlag("--exact") else it }
+    val cargoCommandLine: CargoCommandLine = if (exact) {
+        CargoCommandLine.forTarget(target, "test")
+            .withDoubleDashFlag("--exact")
+            .withDoubleDashFlag(testPath)
+    } else {
+        CargoCommandLine.forTarget(target, "test", listOf(testPath))
+    }
 }
 
 // We need to chop off heading colon `::`, since `crateRelativePath`
