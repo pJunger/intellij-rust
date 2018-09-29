@@ -25,6 +25,9 @@ class CargoLibrary(
     private val isStd: Boolean
 ) : SyntheticLibrary(), ItemPresentation {
     override fun getSourceRoots(): Collection<VirtualFile> = listOf(root)
+    override fun getExcludedRoots(): Set<VirtualFile> =
+        if (isStd) root.findChild("tests")?.let { setOf(it) } ?: emptySet() else emptySet()
+
     override fun equals(other: Any?): Boolean = other is CargoLibrary && other.root == root
     override fun hashCode(): Int = root.hashCode()
 
